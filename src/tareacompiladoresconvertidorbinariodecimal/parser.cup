@@ -1,0 +1,62 @@
+package tareacompiladoresconvertidorbinariodecimal;
+
+import java.util.ArrayList;
+import java.util.List;
+import java_cup.runtime.Symbol;
+import java_cup.runtime.XMLElement;
+import java_cup.runtime.XMLElement;
+
+action code {:
+:}
+
+parser code {:
+        
+        public parser(Lexer lex) { 
+            super(lex);   
+	}
+        
+        public void setAccion(String tipo, String mensaje, String accion){
+            System.out.println(tipo+"         "+mensaje);
+        }
+
+        public void unrecovered_syntax_error(Symbol cur_token){
+            System.err.println("Couldn't repair and continue parse "+cur_token.value);
+        }
+
+        public void syntax_error(Symbol s){
+            String message = "";
+            StringBuilder m = new StringBuilder("Error:");
+        }
+
+:}
+
+/* Terminals (tokens returned by the scanner). */
+terminal String             BIN, PUNTO;
+
+non terminal Double      binE, binD, binF;
+
+
+/* The grammar */
+
+start with binF;
+
+binF ::=            binE:valorEntero PUNTO binD:valorDecimal {:
+                        RESULT = valorEntero + 0.5*valorDecimal;
+                    :}
+                    ;
+
+binE ::=            binE:valorRecorrido BIN:valorAsumar {:
+                        RESULT = valorRecorrido*2 + Double.parseDouble(valorAsumar);
+                    :}
+                    |BIN:valor {:
+                        RESULT = Double.parseDouble(valor);
+                    :}
+                    ;
+
+binD ::=            BIN:valor binD:valorRecorrido {:
+                        RESULT = Double.parseDouble(valor) + valorRecorrido*0.5;
+                    :}
+                    |BIN:valor {:
+                        RESULT = Double.parseDouble(valor);
+                    :}
+                    ;
